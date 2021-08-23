@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -44,14 +45,17 @@ func postData() {
 }
 
 func main() {
-	// Get data from BOM
-	resp, err := http.Get("http://www.bom.gov.au/fwo/IDS60801/IDS60801.94811.json")
+	// Get data from Open Weather
+	resp, err := http.Get("https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=-35.55&lon=138.2333&dt=1629597555&appid=9219e14c1a190adc052618d596aa7e28")
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Response is a 403, the BOM are actively disallowing "webscraping" of their .json endpoint for weather data..."
-	// Attempt to replicate browser request to skirt this issue
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	bs := string(body)
+
+	fmt.Println(bs)
 
 	fmt.Println(resp)
 
